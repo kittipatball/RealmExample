@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import hugo.weaving.DebugLog;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
@@ -68,14 +70,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void QueryRealm() {
+    @DebugLog
+    private String QueryRealm() {
         RealmQuery<User> query = realm.where(User.class);
         String count = String.valueOf(query.count());
-        RealmResults<User> name = query.equalTo("firstName","Kittipat").findAll();
-        for(int i = 0; i < query.count(); i++){
-            Log.e("Results",name.get(i).getFirstName() + " " + name.get(i).getLastName());
-        }
-        Log.e("Results", count);
+        RealmResults<User> name = query.equalTo("firstName","Piyawat").findAll();
+
+        return name.get(0).getFirstName() + " " + name.get(0).getLastName() + " Count " + count;
     }
 
     private void executeRealmTransaction() {
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 RealmQuery<User> query = realm.where(User.class);
                 String firstName = String.valueOf(query.equalTo("firstName",String.valueOf(edtFirstName.getText())));
                 String lastName = String.valueOf(query.equalTo("lastName",String.valueOf(edtLastName.getText())));
-                Log.e("Results ",firstName+" "+lastName);
+                executeRealmOnSuccess(firstName,lastName);
 
             }
         }, new Realm.Transaction.OnError() {
@@ -104,5 +105,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @DebugLog
+    private String executeRealmOnSuccess(String firstName, String lastName) {
+        return firstName+" "+lastName;
     }
 }
